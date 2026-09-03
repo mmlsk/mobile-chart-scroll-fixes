@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kendo UI Chart - naprawa przewijania na mobile</title>
+<link rel="stylesheet" href="https://kendo.cdn.telerik.com/2024.3.1015/styles/default/kendo.default-v2.min.css">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://kendo.cdn.telerik.com/2024.3.1015/js/kendo.all.min.js"></script>
+<style>
+  body { font-family: -apple-system, sans-serif; margin: 0; padding: 24px 16px 200px; background: #f5f5f5; }
+  h1 { font-size: 1.1rem; }
+  p.spacer { color: #888; }
+  #chart { width: 100%; height: 360px; }
+</style>
+</head>
+<body>
+
+  <h1>Przyklad: Kendo UI Chart z naprawionym przewijaniem</h1>
+  <p class="spacer">Przewin te strone zaczynajac dotyk NAD wykresem ponizej - na telefonie powinno to dzialac plynnie.</p>
+
+  <div id="chart"></div>
+
+  <p class="spacer">
+    Dodatkowa trese pod wykresem, zeby bylo co przewijac. Lorem ipsum dolor sit amet,
+    consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore
+    magna aliqua.
+  </p>
+
+  <script type="module">
+    import { applyKendoTouchActionFix } from '../kendo-ui/touch-action-fix.js';
+    import { createTouchScrollIsolator } from '../core/event-isolation.js';
+
+    $("#chart").kendoChart({
+      title: { text: "Przykladowe dane sprzedazy" },
+      legend: { visible: false },
+      seriesDefaults: { type: "line" },
+      series: [{ data: [12, 19, 8, 24, 17, 30, 22] }],
+      categoryAxis: { categories: ["Pn", "Wt", "Sr", "Czw", "Pt", "Sob", "Nd"] },
+      pannable: true,
+      zoomable: { mousewheel: true, selection: false }
+    });
+
+    const chartEl = document.getElementById('chart');
+
+    // 1) Warstwa podstawowa: touch-action + MutationObserver
+    applyKendoTouchActionFix(chartEl, { axis: 'y' });
+
+    // 2) Warstwa zapasowa: izolator zdarzen w fazie przechwytywania -
+    //    przydatna, jesli konkretna wersja Kendo wola preventDefault()
+    //    niezaleznie od CSS.
+    createTouchScrollIsolator(chartEl, { axis: 'vertical' });
+  </script>
+
+</body>
+</html>

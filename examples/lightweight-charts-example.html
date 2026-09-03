@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lightweight Charts - naprawa przewijania na mobile</title>
+<script src="https://unpkg.com/lightweight-charts@5.2.1/dist/lightweight-charts.standalone.production.js"></script>
+<style>
+  body { font-family: -apple-system, sans-serif; margin: 0; padding: 24px 16px 200px; background: #0d1117; color: #e6edf3; }
+  h1 { font-size: 1.1rem; }
+  p.spacer { color: #8b949e; }
+  #chart-container { width: 100%; height: 360px; border: 1px solid #30363d; border-radius: 8px; }
+</style>
+</head>
+<body>
+
+  <h1>Przyklad: Lightweight Charts z naprawionym przewijaniem</h1>
+  <p class="spacer">Przewin te strone zaczynajac dotyk NAD wykresem ponizej - na telefonie powinno to dzialac plynnie, a poziomy pan/pinch-zoom wykresu nadal funkcjonuje.</p>
+
+  <div id="chart-container"></div>
+
+  <p class="spacer">
+    Dodatkowa trese pod wykresem, zeby bylo co przewijac. Lorem ipsum dolor sit amet,
+    consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore
+    magna aliqua.
+  </p>
+
+  <script type="module">
+    import { configureLightweightChartsTouchScroll } from '../lightweight-charts/touch-drag-fix.js';
+    import { createTouchScrollIsolator } from '../core/event-isolation.js';
+
+    const container = document.getElementById('chart-container');
+
+    const chart = LightweightCharts.createChart(container, {
+      layout: { background: { type: 'solid', color: '#0d1117' }, textColor: '#c9d1d9' },
+      grid: { vertLines: { color: 'rgba(48,54,61,0.5)' }, horzLines: { color: 'rgba(48,54,61,0.5)' } },
+      autoSize: true
+    });
+
+    const series = chart.addSeries(LightweightCharts.CandlestickSeries, {
+      upColor: '#26a69a', downColor: '#ef5350',
+      borderUpColor: '#26a69a', borderDownColor: '#ef5350',
+      wickUpColor: '#26a69a', wickDownColor: '#ef5350'
+    });
+
+    series.setData([
+      { time: '2026-08-25', open: 310, high: 316, low: 308, close: 314 },
+      { time: '2026-08-26', open: 314, high: 318, low: 311, close: 312 },
+      { time: '2026-08-27', open: 312, high: 320, low: 310, close: 319 },
+      { time: '2026-08-28', open: 319, high: 322, low: 315, close: 317 },
+      { time: '2026-08-31', open: 317, high: 321, low: 313, close: 320 },
+      { time: '2026-09-01', open: 320, high: 327, low: 315, close: 325 },
+      { time: '2026-09-02', open: 325, high: 328, low: 323, close: 325 }
+    ]);
+
+    chart.timeScale().fitContent();
+
+    // 1) Warstwa podstawowa: natywna opcja handleScroll + touch-action
+    configureLightweightChartsTouchScroll(chart, container, {
+      allowVerticalPageScroll: true,
+      allowHorizontalPan: true,
+      allowPinchZoom: true
+    });
+
+    // 2) Warstwa zapasowa (opcjonalna): izolator zdarzen - w praktyce dla
+    //    Lightweight Charts warstwa 1 zwykle wystarcza, bo biblioteka
+    //    poprawnie respektuje handleScroll.vertTouchDrag; dolaczony tu jako
+    //    demonstracja jednolitego API dla obu bibliotek.
+    createTouchScrollIsolator(container, { axis: 'vertical' });
+  </script>
+
+</body>
+</html>
