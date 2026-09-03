@@ -1,0 +1,24 @@
+{
+  "name": "mobile-chart-scroll-fixes",
+  "version": "1.0.0",
+  "description": "Modularny zestaw poprawek dla problemow z przewijaniem strony na urzadzeniach mobilnych w wykresach Kendo UI i TradingView Lightweight Charts, z wzorcem izolacji zdarzen (capture phase + stopPropagation).",
+  "type": "module",
+  "main": "core/event-isolation.js",
+  "files": [
+    "core",
+    "kendo-ui",
+    "lightweight-charts",
+    "examples"
+  ],
+  "keywords": [
+    "kendo-ui",
+    "lightweight-charts",
+    "touch-action",
+    "mobile-scroll",
+    "chart",
+    "event-isolation"
+  ],
+  "license": "MIT",
+  "author": "mmlsk",
+  "dependencies": {}
+}
